@@ -11,9 +11,8 @@ import numpy as np
 import pandas as pd
 from scipy.stats import skellam
 import streamlit as st
-# st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")
 import yaml
-
 
 
 # UTILS
@@ -82,6 +81,8 @@ def get_bluebikes_station_info(station_id):
     return {
         "station": name,
         "bikes": stock['bikes'],
+        # 'bike wait': "%d" % round(60 / arr),
+        # 'dock wait': "%d" % round(60 / dep),
         "docks": stock['docks'],
         "P(bikeout)": " / ". join(bikeout_probs),
         "P(dockout)": " / ". join(dockout_probs)
@@ -148,7 +149,13 @@ def get_weather_dfs(config):
     hourly_df['dt'] = f.lmap(datetime.fromtimestamp, hourly_df['dt'])
     hourly_df['dt_end'] = f.lmap(datetime.fromtimestamp, hourly_df['dt_end'])
     hourly_df['color'] = f.lmap(get_weather_color, hourly_df['id'])
-    return hourly_df
+
+    current = (
+        "Currently {temp}°F, {description}. Wind {wind_speed} MPH"
+        .format(temp=round(weather['current']['temp']),
+                description=weather['current']['weather'][0]['description'],
+                wind_speed=round(weather['current']['wind_speed'])))
+    return current, hourly_df
 
 
 def get_weather_color(id):
@@ -180,8 +187,7 @@ def get_weather_color(id):
         raise Exception()
 
 
-def get_weather(config):
-    hourly = get_weather_dfs(config)
+def plot_hourly_weather(hourly):
     base = alt.Chart(hourly).encode(x=alt.X('dt:T', axis=alt.Axis(title=None)))
     temp_color = "000000"
     wind_color = "00d2e6"
@@ -225,8 +231,11 @@ with open("config.yaml", "r") as file:
 # st, weather = st.beta_columns(2)
 # st.title('Dashboard')
 
+
 st.header("Weather")
-st.altair_chart(get_weather(CONFIG['weather']), use_container_width=True)
+current, hourly = get_weather_dfs(CONFIG['weather'])
+st.write(current)
+st.altair_chart(plot_hourly_weather(hourly), use_container_width=True)
 st.header("Bluebikes")
 st.write(get_bluebikes_info(CONFIG['bluebikes']))
 st.header("MBTA")

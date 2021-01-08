@@ -172,25 +172,25 @@ def get_weather_color(id):
     elif id in [600, 615, 620]:
         return "#e3a6ff"
     elif id >= 600 and id < 700:
-        return "d06bff"
+        return "#d06bff"
     elif id == 800:
-        return "ffffff"
+        return "#ffffff"
     elif id == 801:
-        return "d9d9d9"
+        return "#d9d9d9"
     elif id == 802:
-        return "bababa"
+        return "#bababa"
     elif id == 803:
-        return "9c9c9c"
+        return "#9c9c9c"
     elif id == 804:
-        return "808080"
+        return "#808080"
     else:
         raise Exception()
 
 
 def plot_hourly_weather(hourly):
     base = alt.Chart(hourly).encode(x=alt.X('dt:T', axis=alt.Axis(title=None)))
-    temp_color = "000000"
-    wind_color = "00d2e6"
+    temp_color = "#000000"
+    wind_color = "#00d2e6"
     temp = (base
             .mark_line(stroke=temp_color)
             .encode(y=alt.Y('temp:Q',
@@ -213,7 +213,7 @@ def plot_hourly_weather(hourly):
                          opacity=0.5))
 
     sun = (base.encode(x2='dt_end:T', color=alt.Color('color', scale=None))
-           .mark_rect(stroke=None, opacity=0.3))
+           .mark_rect(opacity=0.3))
 
     sun_text = base.encode(
         text="description").mark_text(opacity=0.15, angle=270, xOffset=8,
@@ -231,7 +231,8 @@ with open("config.yaml", "r") as file:
 # st, weather = st.beta_columns(2)
 # st.title('Dashboard')
 
-
+st.write("Last updated %s"
+         % datetime.strftime(datetime.now(), "%B %d at %H:%M"))
 st.header("Weather")
 current, hourly = get_weather_dfs(CONFIG['weather'])
 st.write(current)

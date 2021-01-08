@@ -1,0 +1,7 @@
+pandas
+numpy
+funcy
+altair
+scipy
+streamlit
+pyyaml

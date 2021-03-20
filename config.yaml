@@ -4,9 +4,9 @@ mbta:
   route: Red
 
 weather:
-  # lat: 42.360008
-  # lon: -71.067627
-  lat: 41.894649
-  lon: -87.617641
+  lat: 42.360008
+  lon: -71.067627
+  # lat: 41.894649
+  # lon: -87.617641
   appid: 1889b5d2e917cf03e4b307efe444ee7d
   units: imperial
